@@ -5,14 +5,34 @@ class window.App extends Backbone.Model
     @set 'deck', deck = new Deck()
     @set 'playerHand', deck.dealPlayer()
     @set 'dealerHand', deck.dealDealer()
+    @set 'scoreboard', scoreboard = new Scoreboard()
 
     @get('playerHand').on 'bust', (->
       @get('dealerHand').flipFirst()
+      scoreboard.dealerWon()
       ), @
 
     @get('dealerHand').on 'bust', (->
-      console.log 'dealer bust'
+      scoreboard.playerWon()
       ), @
+
+    @get('dealerHand').on 'gameOver', (->
+      playerScore = @get('playerHand').scores()
+      dealerScore = @get('dealerHand').scores()
+
+      finalPlayerScore = if (playerScore[1] < 22) then playerScore[1] else playerScore[0]
+      finalDealerScore = if (dealerScore[1] < 22) then dealerScore[1] else dealerScore[0]
+
+      if finalPlayerScore > finalDealerScore
+        scoreboard.playerWon()
+
+      else if finalDealerScore > finalPlayerScore
+        scoreboard.dealerWon()
+
+      else
+        scoreboard.blackjackPush()
+      ), @
+
 
   hit: ->
     @get('playerHand').hit()

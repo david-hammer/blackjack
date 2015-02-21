@@ -2,15 +2,16 @@ class window.Hand extends Backbone.Collection
   model: Card
 
   initialize: (array, @deck, @isDealer) ->
-    console.log @
 
   hit: ->
     if @isDealer
       if @minScore() > 21
         @bust()
-      if (@minScore() < 17 && (@scores()[1] <= 17 || @scores()[1] >= 22))
+      else if (@minScore() < 17 && (@scores()[1] <= 17 || @scores()[1] >= 22))
         @add(@deck.pop())
         @hit()
+      else #game over - need to check scores
+        @gameOver()
     else
       if @minScore() <= 21
         @add(@deck.pop())
@@ -45,6 +46,7 @@ class window.Hand extends Backbone.Collection
     console.log('bust event triggered')
     @trigger('bust', @)
 
-  win: ->
-    @trigger('win', @)
+  gameOver: ->
+    console.log('gameover')
+    @trigger('gameOver', @)
 

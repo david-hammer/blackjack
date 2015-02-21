@@ -1,16 +1,18 @@
 .card {
-  float: left;
-  border: solid 1px black;
   width: 100px;
-  border-radius: 5px;
-  height: 140px;
+  float: left;
+  width: 100px;
   margin-right: 20px;
-}
-
-.covered {
-  background-color: black;
 }
 
 .hand {
   overflow: auto;
+}
+
+.covered {
+  background: url('../img/cheetah-card.png');
+}
+
+.covered img {
+  visibility: hidden;
 }
