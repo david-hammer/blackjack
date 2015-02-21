@@ -2,9 +2,27 @@ class window.Hand extends Backbone.Collection
   model: Card
 
   initialize: (array, @deck, @isDealer) ->
+    console.log @
 
   hit: ->
-    @add(@deck.pop())
+    if @isDealer
+      if @minScore() > 21
+        @bust()
+      if (@minScore() < 17 && (@scores()[1] <= 17 || @scores()[1] >= 22))
+        @add(@deck.pop())
+        @hit()
+    else
+      if @minScore() <= 21
+        @add(@deck.pop())
+        if @minScore() > 21
+          @bust()
+
+  stand: ->
+    if @isDealer
+      @flipFirst()
+      @hit()
+    else
+      @first().flip()
 
   hasAce: -> @reduce (memo, card) ->
     memo or card.get('value') is 1
@@ -20,4 +38,13 @@ class window.Hand extends Backbone.Collection
     # when there is an ace, it offers you two scores - the original score, and score + 10.
     [@minScore(), @minScore() + 10 * @hasAce()]
 
+  flipFirst: ->
+    @first().flip()
+
+  bust: ->
+    console.log('bust event triggered')
+    @trigger('bust', @)
+
+  win: ->
+    @trigger('win', @)
 

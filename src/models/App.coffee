@@ -6,3 +6,16 @@ class window.App extends Backbone.Model
     @set 'playerHand', deck.dealPlayer()
     @set 'dealerHand', deck.dealDealer()
 
+    @get('playerHand').on 'bust', (->
+      @get('dealerHand').flipFirst()
+      ), @
+
+    @get('dealerHand').on 'bust', (->
+      console.log 'dealer bust'
+      ), @
+
+  hit: ->
+    @get('playerHand').hit()
+  stand: ->
+    if not @get('dealerHand').first().get('revealed')
+      @get('dealerHand').stand()
